@@ -1,5 +1,6 @@
 require "minitest/autorun"
 require "../Reproductor/Minero.rb"
+require '../Reproductor/JuntaEtiquetas.rb'
 
 class TestConteo < Minitest::Test
   def test_CuentaElementos
@@ -7,5 +8,5 @@ class TestConteo < Minitest::Test
     elementosContados=Minero.new.cuentaElementos()
     assert_equal(elementos,elementosContados)
   end
-  
+
 end
