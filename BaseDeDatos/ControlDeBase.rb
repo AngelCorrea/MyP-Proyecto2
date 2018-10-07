@@ -1,7 +1,6 @@
 require 'sqlite3'
 
 class ControlDeBase
-  @@count=0
   def creaBase
     if(File.exists?('base.db'))
       puts " hay archivo"
@@ -54,7 +53,7 @@ class ControlDeBase
           id_performer INTEGER ,
           id_album INTEGER ,
           path TEXT ,
-          title TEXT
+          title TEXT ,
           track INTEGER ,
           year INTEGER ,
           genre TEXT ,
@@ -82,14 +81,17 @@ class ControlDeBase
 
   end
   def addBaseRola (objetoRola)
-    @@count=@@count+1
     album=objetoRola.nombreAlbum
     noAlbum=objetoRola.noAlbum
     año=objetoRola.año
-
     nombreInterprete=objetoRola.inter
+    path=objetoRola.path
+    genre=objetoRola.genero
+    title=objetoRola.titulo
     @@db = SQLite3::Database.new("base.db")
-    @@db.execute("INSERT INTO albums VALUES ( ?, ? ,?,?);",[@@count,"path",album,año])
-    @@db.execute("INSERT INTO performers VALUES ( ? ,?,?);",[@@count,0,nombreInterprete])
+    @@db.execute("INSERT INTO performers (id_type, name) VALUES(?,?);",[0,nombreInterprete])
+    @@db.execute("INSERT INTO rolas (path,title,track,year,genre) VALUES(?,?,?,?,?)",[path,title,noAlbum,año,genre])
+    @@db.execute("INSERT INTO albums (path,name,year) VALUES (?,?,?);",[path,album,año])
+
   end
 end

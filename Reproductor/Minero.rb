@@ -24,7 +24,8 @@ class Minero
       año=tag.year    #=> Año
       genero=tag.genre   #=> Genero
       noAlbum=tag.track   #=> Numero de cancion en el album
-      r= RolaContr.new(interprete,titulo,album,año,genero,noAlbum)
+      path=file
+      r= RolaContr.new(interprete,titulo,album,año,genero,noAlbum,path)
       return r
     end
   end

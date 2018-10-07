@@ -1,6 +1,7 @@
 class RolaContr
 
-  def initialize(interprete,titulo,nombreAlbum,año,genero,noAlbum)
+  def initialize(interprete,titulo,nombreAlbum,año,genero,noAlbum,path)
+    @path=path
     if (interprete==nil or interprete== "")
       @interprete="Unknown"
     else
@@ -57,5 +58,8 @@ class RolaContr
   end
   def noAlbum
     return @noAlbum
+  end
+  def path
+    return @path
   end
 end
