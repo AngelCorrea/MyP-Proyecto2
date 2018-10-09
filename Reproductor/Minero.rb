@@ -4,7 +4,6 @@ require_relative "RolaConst.rb"
 require_relative '../BaseDeDatos/ControlDeBase.rb'
 
 class Minero
-
   def registraElementos()
     Find.find('../MusicaEjemplo/') do |f|
       if File.file?(f)
@@ -42,5 +41,5 @@ end
 end
 s=ControlDeBase.new
 s.creaBase()
-#puts Minero.new.cuentaElementos
+puts s.tablaGeneral
 Minero.new.registraElementos

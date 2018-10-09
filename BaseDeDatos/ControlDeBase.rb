@@ -89,9 +89,20 @@ class ControlDeBase
     genre=objetoRola.genero
     title=objetoRola.titulo
     @@db = SQLite3::Database.new("base.db")
-    @@db.execute("INSERT INTO performers (id_type, name) VALUES(?,?);",[0,nombreInterprete])
-    @@db.execute("INSERT INTO rolas (path,title,track,year,genre) VALUES(?,?,?,?,?)",[path,title,noAlbum,año,genre])
+    @@db.execute("INSERT INTO performers (name) VALUES(?);",[nombreInterprete])
+
     @@db.execute("INSERT INTO albums (path,name,year) VALUES (?,?,?);",[path,album,año])
 
+    idPerformer=@@db.execute("SELECT id_performer FROM performers WHERE name = ?",[nombreInterprete])
+    idPerformer=idPerformer[0]
+    idAlbum=@@db.execute("SELECT id_album FROM albums WHERE name=?",[album])
+    idAlbum=idAlbum[0]
+    @@db.execute("INSERT INTO rolas (id_performer,id_album,path,title,track,year,genre) VALUES(?,?,?,?,?,?,?)",[idPerformer,idAlbum,path,title,noAlbum,año,genre])
+  end
+
+  def tablaGeneral
+    @@db = SQLite3::Database.new("base.db")
+    general=@@db.execute("SELECT title FROM rolas ")
+    return general
   end
 end
