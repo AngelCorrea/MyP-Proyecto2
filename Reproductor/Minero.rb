@@ -2,6 +2,7 @@ require "find"
 require 'taglib'
 require_relative "RolaConst.rb"
 require_relative '../BaseDeDatos/ControlDeBase.rb'
+require 'etc'
 
 class Minero
   def registraElementos()
@@ -39,7 +40,7 @@ class Minero
   end
 end
 end
-s=ControlDeBase.new
-s.creaBase()
-puts s.tablaGeneral
-Minero.new.registraElementos
+
+#puts s.tablaGeneral
+#s.actualizarDatoIdType(1,"Panic! At the Disco")
+#puts Etc.getlogin
