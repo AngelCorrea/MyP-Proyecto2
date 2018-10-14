@@ -190,5 +190,22 @@ class ControlDeBase
     path=@@db.execute("SELECT path FROM rolas ")
     return path
   end
+  def busquedaPorTitulo(titulo)
+    @@db = SQLite3::Database.new("base.db")
+    resultados=@@db.execute("SELECT path FROM rolas WHERE title LIKE '%#{titulo.to_s}%' ")
+    return resultados
+  end
+  def busquedaPorAlbum(name)
+    @@db = SQLite3::Database.new("base.db")
+    resultados=@@db.execute("SELECT path FROM albums WHERE name LIKE '%#{name.to_s}%' ")
+    return resultados
+  end
+  def busquedaPorAutor(interprete)
+    @@db = SQLite3::Database.new("base.db")
+    id=@@db.execute("SELECT id_performer FROM performers WHERE name LIKE '%#{interprete.to_s}%' ")
+    resultados=@@db.execute("SELECT path FROM rolas WHERE id_performer=?",[id[0]])
+    puts resultados
+    return resultados
+  end
 
 end
