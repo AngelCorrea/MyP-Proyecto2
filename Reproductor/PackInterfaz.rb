@@ -1,4 +1,6 @@
 require_relative 'Minero.rb'
+require 'fox16'
+include Fox
 
 class PackInterfaz
 	def setHeaderTabla(tabla)
@@ -122,9 +124,63 @@ class PackInterfaz
 			end
 			PackInterfaz.new.publicaEnPantalla(tabla,resultados)
 		end
-
-
 	end
 
+	def ventanaDeModificacion(app,pathRenglon)
+		configRola=FXDialogBox.new(app,"Editar Interprete",:width=>600,:height=>300)
+		configRola.backColor="SteelBlue"
+		buttons = FXHorizontalFrame.new(configRola,:opts => LAYOUT_FILL_X|LAYOUT_SIDE_BOTTOM|PACK_UNIFORM_WIDTH)
+		buttons.backColor="SkyBlue"
+	 	FXButton.new(buttons, "OK",:target => configRola, :selector => FXDialogBox::ID_ACCEPT,:opts => BUTTON_NORMAL|LAYOUT_CENTER_X)
+	 	FXButton.new(buttons, "Cancel",:target => configRola, :selector => FXDialogBox::ID_CANCEL,:opts => BUTTON_NORMAL|LAYOUT_CENTER_X)
 
+		tabbook = FXTabBook.new(configRola, :opts => LAYOUT_FILL)
+		tabbook.backColor="SkyBlue"
+		PackInterfaz.new.tabBookPersona(tabbook)
+		PackInterfaz.new.tabBookGrupo(tabbook)
+
+		 configRola.execute
+	end
+
+	def tabBookPersona(tabbook)
+		personaTab = FXTabItem.new(tabbook, " Persona ")
+		personaPage = FXVerticalFrame.new(tabbook,
+		:opts => FRAME_RAISED|LAYOUT_FILL)
+		personaPage.backColor="CadetBlue"
+		personaTab.backColor="CadetBlue"
+		form = FXMatrix.new(personaPage, 2,
+		 :opts => MATRIX_BY_COLUMNS|LAYOUT_FILL_X)
+	 FXLabel.new(form, "Nombre Artístico:")
+	 FXTextField.new(form, 20, :selector => FXDataTarget::ID_VALUE,
+		 :opts => TEXTFIELD_NORMAL|LAYOUT_FILL_X|LAYOUT_FILL_COLUMN)
+	 FXLabel.new(form, "Nombre Real:")
+	 FXTextField.new(form, 20,:selector => FXDataTarget::ID_VALUE,
+		 :opts => TEXTFIELD_NORMAL|LAYOUT_FILL_X|LAYOUT_FILL_COLUMN)
+	 FXLabel.new(form, "Fecha de Nacimiento:")
+	 FXTextField.new(form, 20, :selector => FXDataTarget::ID_VALUE,
+		 :opts => TEXTFIELD_NORMAL|LAYOUT_FILL_X|LAYOUT_FILL_COLUMN)
+	 FXLabel.new(form, "Fecha de muerte:")
+	 FXTextField.new(form, 20, :selector => FXDataTarget::ID_VALUE,
+		 :opts => TEXTFIELD_NORMAL|LAYOUT_FILL_X|LAYOUT_FILL_COLUMN)
+	end
+
+	def tabBookGrupo(tabbook)
+		grupoTab = FXTabItem.new(tabbook, " Grupo ")
+		grupoPage = FXVerticalFrame.new(tabbook,
+		:opts => FRAME_RAISED|LAYOUT_FILL)
+		grupoTab.backColor="palevioletred"
+		grupoPage.backColor="palevioletred"
+
+		form = FXMatrix.new(grupoPage, 2,
+		:opts => MATRIX_BY_COLUMNS|LAYOUT_FILL_X)
+		FXLabel.new(form, "Nombre:")
+		FXTextField.new(form, 20, :selector => FXDataTarget::ID_VALUE,
+		:opts => TEXTFIELD_NORMAL|LAYOUT_FILL_X|LAYOUT_FILL_COLUMN)
+		FXLabel.new(form, "Fecha de inicio:")
+		FXTextField.new(form, 20, :selector => FXDataTarget::ID_VALUE,
+		:opts => TEXTFIELD_NORMAL|LAYOUT_FILL_X|LAYOUT_FILL_COLUMN)
+		FXLabel.new(form, "Fecha final:")
+		FXTextField.new(form, 20, :selector => FXDataTarget::ID_VALUE,
+		:opts => TEXTFIELD_NORMAL|LAYOUT_FILL_X|LAYOUT_FILL_COLUMN)
+	end
 end
