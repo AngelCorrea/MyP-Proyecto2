@@ -120,13 +120,13 @@ class ControlDeBase
   def actualizaArtista(stage_name,real_name,birth_date,death_date)
     @@db = SQLite3::Database.new("base.db")
     if(real_name!=nil)
-      @@db.execute("UPDATE person SET real_name=? WHERE stage_name = ?",[real_name,stage_name])
+      @@db.execute("UPDATE persons SET real_name=? WHERE stage_name = ?",[real_name,stage_name])
     end
     if (birth_date!= nil)
-      @@db.execute("UPDATE person SET birth_date=? WHERE name = ?",[birth_date,stage_name])
+      @@db.execute("UPDATE persons SET birth_date=? WHERE stage_name = ?",[birth_date,stage_name])
     end
     if(death_date!=nil)
-      @@db.execute("UPDATE person SET death_date=? WHERE name = ?",[death_date,stage_name])
+      @@db.execute("UPDATE persons SET death_date=? WHERE stage_name = ?",[death_date,stage_name])
     end
   end
 
@@ -198,11 +198,17 @@ class ControlDeBase
     return resultados
   end
   def busquedaPorAutor(interprete)
-    ############POR ARREGLAR
     @@db = SQLite3::Database.new("base.db")
     id=@@db.execute("SELECT id_performer FROM performers WHERE name LIKE '%#{interprete.to_s}%' ")
-    resultados=@@db.execute("SELECT path FROM rolas WHERE id_performer=?",[id[0]])
-    puts resultados
+    puts id
+    i=0
+    resultados=[]
+    envoltura=[]
+    while i<id.length
+     envoltura=@@db.execute("SELECT path FROM rolas WHERE id_performer=?",[id[i]])
+     resultados=envoltura | resultados
+      i=i+1
+    end
     return resultados
   end
 

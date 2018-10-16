@@ -158,7 +158,6 @@ class PackInterfaz
 
 	 idPerformer=ControlDeBase.new.buscaPorPath(pathRenglon)
  	 nombrePerformer=ControlDeBase.new.buscaPorId_Performer(idPerformer)
-
 	 ControlDeBase.new.buscarIdentificados("persons",nombrePerformer[0][0])
 
 	 FXLabel.new(form, "Nombre Artístico:")
@@ -173,10 +172,32 @@ class PackInterfaz
 	fechaMuerte =FXTextField.new(form, 20, :selector => FXDataTarget::ID_VALUE,
 		 :opts => TEXTFIELD_NORMAL|LAYOUT_FILL_X|LAYOUT_FILL_COLUMN)
 		 botonAceptar=FXButton.new(personaPage, "Guardar",:target => configRola, :selector => FXDialogBox::ID_ACCEPT,:opts => BUTTON_NORMAL|LAYOUT_CENTER_X)
-
-	 botonAceptar.connect(SEL_COMMAND) do
- 		ControlDeBase.new.registrarPersona(nombrePerformer[0][0],nombreReal.text,fechaNacimiento.text,fechaMuerte.text)
-		ControlDeBase.new.actualizarDatoIdType(0,nombrePerformer[0][0])
+		 reconocido=ControlDeBase.new. buscarIdentificados("persons",nombrePerformer[0][0])
+		 if(!reconocido[0].nil?)
+		  	nombreReal.text=reconocido[0][2]
+				fechaNacimiento.text=reconocido[0][3]
+		 		fechaMuerte.text=reconocido[0][4]
+				tabbook.connect(SEL_COMMAND) do
+					tabbook.setCurrent(0,true)
+				end
+			end
+		botonAceptar.connect(SEL_COMMAND) do
+			if(reconocido[0].nil?)
+				ControlDeBase.new.registrarPersona(nombrePerformer[0][0],nombreReal.text,fechaNacimiento.text,fechaMuerte.text)
+				ControlDeBase.new.actualizarDatoIdType(0,nombrePerformer[0][0])
+			else
+				ControlDeBase.new.actualizaArtista(nombrePerformer[0][0],nombreReal.text,fechaNacimiento.text,fechaMuerte.text)
+			end
+			botonAceptar.hide
+			nombreReal.backColor="gray"
+			fechaNacimiento.backColor="gray"
+			fechaMuerte.backColor="Gray"
+			nombreReal.editable=false
+  		fechaNacimiento.editable=false
+			fechaMuerte.editable=false
+				tabbook.connect(SEL_COMMAND) do
+				tabbook.setCurrent(0,true)
+			end
  		end
 	end
 
