@@ -1,4 +1,5 @@
 require_relative 'Minero.rb'
+require_relative '../BaseDeDatos/ControlDeBase.rb'
 require 'fox16'
 include Fox
 
@@ -18,7 +19,7 @@ class PackInterfaz
 		tabla.columnHeader.setItemSize(1,200)
 		tabla.columnHeader.setItemSize(2,200)
 		tabla.columnHeader.setItemSize(3,200)
-		tabla.columnHeader.setItemSize(4,0)
+		tabla.columnHeader.setItemSize(4,-1)
 	end
 	def botonMinarAccion(tabla)
 		s=ControlDeBase.new
@@ -131,18 +132,18 @@ class PackInterfaz
 		configRola.backColor="SteelBlue"
 		buttons = FXHorizontalFrame.new(configRola,:opts => LAYOUT_FILL_X|LAYOUT_SIDE_BOTTOM|PACK_UNIFORM_WIDTH)
 		buttons.backColor="SkyBlue"
-	 	FXButton.new(buttons, "OK",:target => configRola, :selector => FXDialogBox::ID_ACCEPT,:opts => BUTTON_NORMAL|LAYOUT_CENTER_X)
-	 	FXButton.new(buttons, "Cancel",:target => configRola, :selector => FXDialogBox::ID_CANCEL,:opts => BUTTON_NORMAL|LAYOUT_CENTER_X)
+	 	FXButton.new(buttons, "Salir",:target => configRola, :selector => FXDialogBox::ID_CANCEL,:opts => BUTTON_NORMAL|LAYOUT_CENTER_X)
 
 		tabbook = FXTabBook.new(configRola, :opts => LAYOUT_FILL)
 		tabbook.backColor="SkyBlue"
-		PackInterfaz.new.tabBookPersona(tabbook)
-		PackInterfaz.new.tabBookGrupo(tabbook)
+
+		PackInterfaz.new.tabBookPersona(tabbook,pathRenglon,configRola)
+		PackInterfaz.new.tabBookGrupo(tabbook,pathRenglon,configRola)
 
 		 configRola.execute
 	end
 
-	def tabBookPersona(tabbook)
+	def tabBookPersona(tabbook,pathRenglon,configRola)
 		personaTab = FXTabItem.new(tabbook, " Persona ")
 		personaPage = FXVerticalFrame.new(tabbook,
 		:opts => FRAME_RAISED|LAYOUT_FILL)
@@ -150,21 +151,37 @@ class PackInterfaz
 		personaTab.backColor="CadetBlue"
 		form = FXMatrix.new(personaPage, 2,
 		 :opts => MATRIX_BY_COLUMNS|LAYOUT_FILL_X)
+
+	 pathRenglon=pathRenglon.delete "["
+	 pathRenglon=pathRenglon.delete"]"
+	 pathRenglon=pathRenglon.delete"\""
+
+	 idPerformer=ControlDeBase.new.buscaPorPath(pathRenglon)
+ 	 nombrePerformer=ControlDeBase.new.buscaPorId_Performer(idPerformer)
+
+	 ControlDeBase.new.buscarIdentificados("persons",nombrePerformer[0][0])
+
 	 FXLabel.new(form, "Nombre Artístico:")
-	 FXTextField.new(form, 20, :selector => FXDataTarget::ID_VALUE,
-		 :opts => TEXTFIELD_NORMAL|LAYOUT_FILL_X|LAYOUT_FILL_COLUMN)
+	 FXLabel.new(form, nombrePerformer[0][0])
 	 FXLabel.new(form, "Nombre Real:")
-	 FXTextField.new(form, 20,:selector => FXDataTarget::ID_VALUE,
+	 nombreReal=FXTextField.new(form, 20,:selector => FXDataTarget::ID_VALUE,
 		 :opts => TEXTFIELD_NORMAL|LAYOUT_FILL_X|LAYOUT_FILL_COLUMN)
 	 FXLabel.new(form, "Fecha de Nacimiento:")
-	 FXTextField.new(form, 20, :selector => FXDataTarget::ID_VALUE,
+	 fechaNacimiento=FXTextField.new(form, 20, :selector => FXDataTarget::ID_VALUE,
 		 :opts => TEXTFIELD_NORMAL|LAYOUT_FILL_X|LAYOUT_FILL_COLUMN)
 	 FXLabel.new(form, "Fecha de muerte:")
-	 FXTextField.new(form, 20, :selector => FXDataTarget::ID_VALUE,
+	fechaMuerte =FXTextField.new(form, 20, :selector => FXDataTarget::ID_VALUE,
 		 :opts => TEXTFIELD_NORMAL|LAYOUT_FILL_X|LAYOUT_FILL_COLUMN)
+		 botonAceptar=FXButton.new(personaPage, "Guardar",:target => configRola, :selector => FXDialogBox::ID_ACCEPT,:opts => BUTTON_NORMAL|LAYOUT_CENTER_X)
+
+	 botonAceptar.connect(SEL_COMMAND) do
+ 		ControlDeBase.new.registrarPersona(nombrePerformer[0][0],nombreReal.text,fechaNacimiento.text,fechaMuerte.text)
+		ControlDeBase.new.actualizarDatoIdType(0,nombrePerformer[0][0])
+ 		end
 	end
 
-	def tabBookGrupo(tabbook)
+
+	def tabBookGrupo(tabbook,pathRenglon,configRola)
 		grupoTab = FXTabItem.new(tabbook, " Grupo ")
 		grupoPage = FXVerticalFrame.new(tabbook,
 		:opts => FRAME_RAISED|LAYOUT_FILL)
@@ -173,14 +190,35 @@ class PackInterfaz
 
 		form = FXMatrix.new(grupoPage, 2,
 		:opts => MATRIX_BY_COLUMNS|LAYOUT_FILL_X)
+		pathRenglon=pathRenglon.delete "["
+		pathRenglon=pathRenglon.delete"]"
+		pathRenglon=pathRenglon.delete"\""
+
+		idPerformer=ControlDeBase.new.buscaPorPath(pathRenglon)
+		nombrePerformer=ControlDeBase.new.buscaPorId_Performer(idPerformer)
+
 		FXLabel.new(form, "Nombre:")
-		FXTextField.new(form, 20, :selector => FXDataTarget::ID_VALUE,
-		:opts => TEXTFIELD_NORMAL|LAYOUT_FILL_X|LAYOUT_FILL_COLUMN)
+		FXLabel.new(form, nombrePerformer[0][0])
+
 		FXLabel.new(form, "Fecha de inicio:")
-		FXTextField.new(form, 20, :selector => FXDataTarget::ID_VALUE,
-		:opts => TEXTFIELD_NORMAL|LAYOUT_FILL_X|LAYOUT_FILL_COLUMN)
+		fechaInicio=FXTextField.new(form, 20,:opts => TEXTFIELD_NORMAL|LAYOUT_FILL_X|LAYOUT_FILL_COLUMN)
 		FXLabel.new(form, "Fecha final:")
-		FXTextField.new(form, 20, :selector => FXDataTarget::ID_VALUE,
-		:opts => TEXTFIELD_NORMAL|LAYOUT_FILL_X|LAYOUT_FILL_COLUMN)
+		fechaFinal=FXTextField.new(form, 20,:opts => TEXTFIELD_NORMAL|LAYOUT_FILL_X|LAYOUT_FILL_COLUMN)
+
+		botonAceptar=FXButton.new(grupoPage," Guardar ",:opts => LAYOUT_EXPLICIT|BUTTON_NORMAL,:width=>80,:height=>30,:x=>240,:y=>150)
+		botonAceptar.connect(SEL_COMMAND) do
+			ControlDeBase.new.registrarGrupo(nombrePerformer[0][0],fechaInicio.text,fechaFinal.text)
+			ControlDeBase.new.actualizarDatoIdType(1,nombrePerformer[0][0])
+			botonAceptar.hide
+			fechaInicio.backColor="gray"
+			fechaFinal.backColor="gray"
+			fechaInicio.editable=false
+			fechaFinal.editable=false
+			tabbook.connect(SEL_COMMAND) do
+				tabbook.setCurrent(1,true)
+			end
+		end
+
+
 	end
 end

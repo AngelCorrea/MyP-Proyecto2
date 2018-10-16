@@ -110,10 +110,10 @@ class ControlDeBase
   def actualizaBanda(fechaInicio,fechaFinal,nombre)
     @@db = SQLite3::Database.new("base.db")
     if(fechaInicio!=nil)
-      @@db.execute("UPDATE groups SET start_date=? WHERE name = ?",[fechaInicio,name])
+      @@db.execute("UPDATE groups SET start_date=? WHERE name = ?",[fechaInicio,nombre])
     end
     if (fechaFinal!= nil)
-      @@db.execute("UPDATE groups SET end_date=? WHERE name = ?",[fechaFinal,name])
+      @@db.execute("UPDATE groups SET end_date=? WHERE name = ?",[fechaFinal,nombre])
     end
   end
 
@@ -131,31 +131,28 @@ class ControlDeBase
   end
 
   def registrarPersona(stage_name,real_name,birth_date,death_date)
-    if(real_name== nil)
+    if(real_name== nil or real_name=="")
       real_name="Unknown"
     end
-    if (birth_date==nil)
+    if (birth_date==nil or birth_date=="")
       birth_date="Unknown"
     end
-    if (birth_date==nil)
-      birth_date="Unknown"
-    end
-    if (death_date == nil)
+    if (death_date == nil or death_date=="")
       death_date="Unknown"
     end
     @@db = SQLite3::Database.new("base.db")
-    @@db.execute("INSERT persons (stage_name,real_name,birth_date,death_date) VALUES(?,?,?,?)"[stage_name,real_name,birth_date,death_date])
+    @@db.execute("INSERT INTO persons (stage_name,real_name,birth_date,death_date) VALUES (?,?,?,?)",[stage_name,real_name,birth_date,death_date])
   end
 
   def registrarGrupo(name,start_date,end_date)
     @@db = SQLite3::Database.new("base.db")
-    if(start_date==nil)
+    if(start_date==nil or start_date=="")
       start_date="Unknown"
     end
-    if(end_date==nil)
+    if(end_date==nil or end_date=="")
       end_date="Unknown"
     end
-    @@db.execute("INSERT groups (name,start_date,end_date) VALUES (?,?,?)",[name,stage_name,end_date])
+    @@db.execute("INSERT INTO groups (name,start_date,end_date) VALUES (?,?,?)",[name,start_date,end_date])
   end
 
   def personaEnGrupo (personaName,grupoName)
@@ -201,11 +198,36 @@ class ControlDeBase
     return resultados
   end
   def busquedaPorAutor(interprete)
+    ############POR ARREGLAR
     @@db = SQLite3::Database.new("base.db")
     id=@@db.execute("SELECT id_performer FROM performers WHERE name LIKE '%#{interprete.to_s}%' ")
     resultados=@@db.execute("SELECT path FROM rolas WHERE id_performer=?",[id[0]])
     puts resultados
     return resultados
   end
+
+  def buscaPorPath(path)
+    @@db = SQLite3::Database.new("base.db")
+    resultados=@@db.execute("SELECT id_performer FROM rolas WHERE path=?",[path])
+    return resultados
+  end
+
+  def buscaPorId_Performer(id_performer)
+    @@db = SQLite3::Database.new("base.db")
+    resultados=@@db.execute("SELECT name FROM performers WHERE id_performer=?",[id_performer])
+    return resultados
+  end
+
+  def buscarIdentificados(tipoTabla,name)
+    @@db = SQLite3::Database.new("base.db")
+    if(tipoTabla=="persons")
+      resultados=@@db.execute("SELECT * FROM #{tipoTabla} WHERE stage_name=? ",[name])
+    else
+      resultados=@@db.execute("SELECT * FROM #{tipoTabla} WHERE name=? ",[name])
+    end
+    return resultados
+  end
+
+
 
 end

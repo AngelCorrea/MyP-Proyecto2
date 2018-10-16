@@ -12,14 +12,15 @@ class ReproductorMp3 < FXMainWindow
     self.icon=icono
 
     hFrame2=FXHorizontalFrame.new(self,:opts => LAYOUT_FILL)
-    entradaDeBusqueda=FXTextField.new(self,100,:opts=>LAYOUT_EXPLICIT,:width=>100,:height=>30,:x=>20,:y=>500)
+    entradaDeBusqueda=FXTextField.new(self,100,:opts=>LAYOUT_EXPLICIT|TEXTFIELD_NORMAL,:width=>100,:height=>30,:x=>20,:y=>500)
     hFrame2.backColor = "dark cyan"
     tabla=FXTable.new(self,:opts =>LAYOUT_EXPLICIT|TABLE_READONLY|TABLE_NO_COLSELECT|TABLE_COL_SIZABLE,:width=>901,:height=>400,:x=>20,:y=>20)
     PackInterfaz.new.setHeaderTabla(tabla)
 
     tabla.connect(SEL_TRIPLECLICKED) do |b|
+      ##Entrada para modificar
       tabla.selectRow(b.anchorRow)
-      puts pathRenglon=tabla.getItemText(b.anchorRow,4)
+      pathRenglon=tabla.getItemText(b.anchorRow,4)
       PackInterfaz.new.ventanaDeModificacion(self,pathRenglon)
     end
 
@@ -27,6 +28,7 @@ class ReproductorMp3 < FXMainWindow
     tabla.connect(SEL_DOUBLECLICKED) do |c|
       s=tabla.getItemText(c.anchorRow,4)
     end
+
     hFrame=FXHorizontalFrame.new(self,:opts => LAYOUT_EXPLICIT,:width=>50,:height=>30,:x=>490,:y=>440)
     botonMinar=FXButton.new(hFrame,"Minar")
 
