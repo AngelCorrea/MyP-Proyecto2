@@ -2,12 +2,12 @@ require 'sqlite3'
 
 class ControlDeBase
   def creaBase
-    if(File.exists?('base.db'))
+    if(File.exists?('../BaseDeDatos/base.db'))
       puts " hay archivo"
     else
       puts "no hay arvhivo"
-      File.open('base.db','w') do |base|
-        @@db = SQLite3::Database.new("base.db")
+      File.open('../BaseDeDatos/base.db','w') do |base|
+        @@db = SQLite3::Database.new("../BaseDeDatos/base.db")
         rows = @@db.execute <<-SQL
         CREATE TABLE types (
           id_type INTEGER PRIMARY KEY ,
@@ -80,6 +80,7 @@ class ControlDeBase
     end
 
   end
+
   def addBaseRola (objetoRola)
     album=objetoRola.nombreAlbum
     noAlbum=objetoRola.noAlbum
@@ -88,7 +89,7 @@ class ControlDeBase
     path=objetoRola.path
     genre=objetoRola.genero
     title=objetoRola.titulo
-    @@db = SQLite3::Database.new("base.db")
+    @@db = SQLite3::Database.new("../BaseDeDatos/base.db")
     pathExistente = @@db.execute("SELECT path FROM rolas WHERE path=? ",[path])
     if(pathExistente[0]=="" or pathExistente[0]==nil)
       @@db.execute("INSERT INTO performers (id_type,name) VALUES(?,?);",[2,nombreInterprete])
@@ -103,12 +104,12 @@ class ControlDeBase
   end
 
   def actualizarDatoIdType(nuevaIdType,interprete)
-    @@db = SQLite3::Database.new("base.db")
+    @@db = SQLite3::Database.new("../BaseDeDatos/base.db")
     @@db.execute("UPDATE performers SET id_type=? WHERE name= ? ",[nuevaIdType,interprete])
   end
 
-  def actualizaBanda(fechaInicio,fechaFinal,nombre)
-    @@db = SQLite3::Database.new("base.db")
+  def actualizaBanda(nombre,fechaInicio,fechaFinal)
+    @@db = SQLite3::Database.new("../BaseDeDatos/base.db")
     if(fechaInicio!=nil)
       @@db.execute("UPDATE groups SET start_date=? WHERE name = ?",[fechaInicio,nombre])
     end
@@ -118,7 +119,7 @@ class ControlDeBase
   end
 
   def actualizaArtista(stage_name,real_name,birth_date,death_date)
-    @@db = SQLite3::Database.new("base.db")
+    @@db = SQLite3::Database.new("../BaseDeDatos/base.db")
     if(real_name!=nil)
       @@db.execute("UPDATE persons SET real_name=? WHERE stage_name = ?",[real_name,stage_name])
     end
@@ -140,12 +141,12 @@ class ControlDeBase
     if (death_date == nil or death_date=="")
       death_date="Unknown"
     end
-    @@db = SQLite3::Database.new("base.db")
+    @@db = SQLite3::Database.new("../BaseDeDatos/base.db")
     @@db.execute("INSERT INTO persons (stage_name,real_name,birth_date,death_date) VALUES (?,?,?,?)",[stage_name,real_name,birth_date,death_date])
   end
 
   def registrarGrupo(name,start_date,end_date)
-    @@db = SQLite3::Database.new("base.db")
+    @@db = SQLite3::Database.new("../BaseDeDatos/base.db")
     if(start_date==nil or start_date=="")
       start_date="Unknown"
     end
@@ -156,51 +157,50 @@ class ControlDeBase
   end
 
   def personaEnGrupo (personaName,grupoName)
-    @@db = SQLite3::Database.new("base.db")
+    @@db = SQLite3::Database.new("../BaseDeDatos/base.db")
     idPersona=@@db.execute("SELECT id_person FROM person WHERE stage_name = ? ",[personaName])
     idGrupo=@@db.execute("SELECT id_group FROM groups WHERE name=?",[grupoName])
     @@db.execute("INSERT INTO in_group (id_person,id_group) VALUES (?,?)",[idPersona,idGrupo])
   end
 
   def tablaGeneralTitulos
-    @@db = SQLite3::Database.new("base.db")
+    @@db = SQLite3::Database.new("../BaseDeDatos/base.db")
     titulos=@@db.execute("SELECT title FROM rolas ")
     return titulos
   end
   def tablaGeneralArtistas
-    @@db = SQLite3::Database.new("base.db")
+    @@db = SQLite3::Database.new("../BaseDeDatos/base.db")
     artistas=@@db.execute("SELECT name FROM performers ")
     return artistas
   end
   def tablaGeneralAlbum
-    @@db = SQLite3::Database.new("base.db")
+    @@db = SQLite3::Database.new("../BaseDeDatos/base.db")
     albums=@@db.execute("SELECT name FROM albums ")
     return albums
   end
   def tablaGeneralGenero
-    @@db = SQLite3::Database.new("base.db")
+    @@db = SQLite3::Database.new("../BaseDeDatos/base.db")
     genero=@@db.execute("SELECT genre FROM rolas ")
     return genero
   end
   def tablaGeneralPath
-    @@db = SQLite3::Database.new("base.db")
+    @@db = SQLite3::Database.new("../BaseDeDatos/base.db")
     path=@@db.execute("SELECT path FROM rolas ")
     return path
   end
   def busquedaPorTitulo(titulo)
-    @@db = SQLite3::Database.new("base.db")
+    @@db = SQLite3::Database.new("../BaseDeDatos/base.db")
     resultados=@@db.execute("SELECT path FROM rolas WHERE title LIKE '%#{titulo.to_s}%' ")
     return resultados
   end
   def busquedaPorAlbum(name)
-    @@db = SQLite3::Database.new("base.db")
+    @@db = SQLite3::Database.new("../BaseDeDatos/base.db")
     resultados=@@db.execute("SELECT path FROM albums WHERE name LIKE '%#{name.to_s}%' ")
     return resultados
   end
   def busquedaPorAutor(interprete)
-    @@db = SQLite3::Database.new("base.db")
+    @@db = SQLite3::Database.new("../BaseDeDatos/base.db")
     id=@@db.execute("SELECT id_performer FROM performers WHERE name LIKE '%#{interprete.to_s}%' ")
-    puts id
     i=0
     resultados=[]
     envoltura=[]
@@ -213,19 +213,19 @@ class ControlDeBase
   end
 
   def buscaPorPath(path)
-    @@db = SQLite3::Database.new("base.db")
+    @@db = SQLite3::Database.new("../BaseDeDatos/base.db")
     resultados=@@db.execute("SELECT id_performer FROM rolas WHERE path=?",[path])
     return resultados
   end
 
   def buscaPorId_Performer(id_performer)
-    @@db = SQLite3::Database.new("base.db")
+    @@db = SQLite3::Database.new("../BaseDeDatos/base.db")
     resultados=@@db.execute("SELECT name FROM performers WHERE id_performer=?",[id_performer])
     return resultados
   end
 
   def buscarIdentificados(tipoTabla,name)
-    @@db = SQLite3::Database.new("base.db")
+    @@db = SQLite3::Database.new("../BaseDeDatos/base.db")
     if(tipoTabla=="persons")
       resultados=@@db.execute("SELECT * FROM #{tipoTabla} WHERE stage_name=? ",[name])
     else

@@ -6,12 +6,24 @@ require 'etc'
 
 class Minero
   def registraElementos()
-    Find.find('../MusicaEjemplo/') do |f|
+    i=0
+    Find.find('/home/'+Etc.getlogin+'/Música') do |f|
       if File.file?(f)
         rola=Minero.new.empaquetaEtiquetas(f)
         ControlDeBase.new.addBaseRola(rola)
+        i=i+1
       end
     end
+  end
+
+  def cuentaElementos()
+    elementos=0
+    Find.find('/home/'+Etc.getlogin+'/Música') do |f|
+      if File.file?(f)
+        elementos=elementos+1
+      end
+    end
+    return elementos
   end
 
   def empaquetaEtiquetas(file)
@@ -29,18 +41,5 @@ class Minero
       return r
     end
   end
-  def cuentaElementos
-    elementos=0
-    Find.find('../MusicaEjemplo/') do |f|
-      if File.file?(f)
-        elementos=elementos+1
-      end
-    end
-    return elementos
-  end
 end
 end
-
-#puts s.tablaGeneral
-#s.actualizarDatoIdType(1,"Panic! At the Disco")
-#puts Etc.getlogin

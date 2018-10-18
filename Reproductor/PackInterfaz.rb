@@ -15,10 +15,10 @@ class PackInterfaz
 		tabla.setColumnText(2,"Album")
 		tabla.setColumnText(3,"Genero")
 		tabla.setColumnText(4,"path")
-		tabla.columnHeader.setItemSize(0,300)
-		tabla.columnHeader.setItemSize(1,200)
-		tabla.columnHeader.setItemSize(2,200)
-		tabla.columnHeader.setItemSize(3,200)
+		tabla.columnHeader.setItemSize(0,405)
+		tabla.columnHeader.setItemSize(1,235)
+		tabla.columnHeader.setItemSize(2,230)
+		tabla.columnHeader.setItemSize(3,230)
 		tabla.columnHeader.setItemSize(4,-1)
 	end
 	def botonMinarAccion(tabla)
@@ -42,18 +42,20 @@ class PackInterfaz
 					e=e+1
 				end
 			end
-			tabla.appendRows(1)
-			tabla.setItemText(i,0,titulos[i].to_s)
-			tabla.setItemText(i,1,artistas[i].to_s)
-			tabla.setItemText(i,2,albums[i].to_s)
-			tabla.setItemText(i,3,genero[i].to_s)
-			tabla.setItemText(i,4,path[i].to_s)
-			tabla.setItemJustify(i,0,FXTableItem::CENTER_X)
-			tabla.setItemJustify(i,1,FXTableItem::CENTER_X)
-			tabla.setItemJustify(i,2,FXTableItem::CENTER_X)
-			tabla.setItemJustify(i,3,FXTableItem::CENTER_X)
-			i=i+1
-			e=0
+			if(!path[i].nil?)
+				tabla.appendRows(1)
+				tabla.setItemText(i,0,titulos[i][0].to_s)
+				tabla.setItemText(i,1,artistas[i][0].to_s)
+				tabla.setItemText(i,2,albums[i][0].to_s)
+				tabla.setItemText(i,3,genero[i][0].to_s)
+				tabla.setItemText(i,4,path[i].to_s)
+				tabla.setItemJustify(i,0,FXTableItem::LEFT)
+				tabla.setItemJustify(i,1,FXTableItem::LEFT)
+				tabla.setItemJustify(i,2,FXTableItem::LEFT)
+				tabla.setItemJustify(i,3,FXTableItem::LEFT)
+				i=i+1
+				e=0
+			end
 		end
 	end
 
@@ -181,7 +183,7 @@ class PackInterfaz
 					tabbook.setCurrent(0,true)
 				end
 			end
-		botonAceptar.connect(SEL_COMMAND) do
+			botonAceptar.connect(SEL_COMMAND) do
 			if(reconocido[0].nil?)
 				ControlDeBase.new.registrarPersona(nombrePerformer[0][0],nombreReal.text,fechaNacimiento.text,fechaMuerte.text)
 				ControlDeBase.new.actualizarDatoIdType(0,nombrePerformer[0][0])
@@ -225,21 +227,34 @@ class PackInterfaz
 		fechaInicio=FXTextField.new(form, 20,:opts => TEXTFIELD_NORMAL|LAYOUT_FILL_X|LAYOUT_FILL_COLUMN)
 		FXLabel.new(form, "Fecha final:")
 		fechaFinal=FXTextField.new(form, 20,:opts => TEXTFIELD_NORMAL|LAYOUT_FILL_X|LAYOUT_FILL_COLUMN)
-
 		botonAceptar=FXButton.new(grupoPage," Guardar ",:opts => LAYOUT_EXPLICIT|BUTTON_NORMAL,:width=>80,:height=>30,:x=>240,:y=>150)
-		botonAceptar.connect(SEL_COMMAND) do
-			ControlDeBase.new.registrarGrupo(nombrePerformer[0][0],fechaInicio.text,fechaFinal.text)
-			ControlDeBase.new.actualizarDatoIdType(1,nombrePerformer[0][0])
-			botonAceptar.hide
-			fechaInicio.backColor="gray"
-			fechaFinal.backColor="gray"
-			fechaInicio.editable=false
-			fechaFinal.editable=false
+
+
+		reconocido=ControlDeBase.new. buscarIdentificados("groups",nombrePerformer[0][0])
+		if(!reconocido[0].nil?)
+			tabbook.setCurrent(1,true)
+			fechaInicio.text=reconocido[0][2]
+			fechaFinal.text=reconocido[0][3]
 			tabbook.connect(SEL_COMMAND) do
 				tabbook.setCurrent(1,true)
 			end
 		end
-
-
+		botonAceptar.connect(SEL_COMMAND) do
+			if(reconocido[0].nil?)
+				ControlDeBase.new.registrarGrupo(nombrePerformer[0][0],fechaInicio.text,fechaFinal.text)
+ 				ControlDeBase.new.actualizarDatoIdType(1,nombrePerformer[0][0])
+			else
+				ControlDeBase.new.actualizaBanda(nombrePerformer[0][0],fechaInicio.text,fechaFinal.text)
+			end
+		 	botonAceptar.hide
+		 	fechaInicio.backColor="gray"
+		 	fechaFinal.backColor="gray"
+		 	fechaInicio.editable=false
+		 	fechaFinal.editable=false
+		 	tabbook.connect(SEL_COMMAND) do
+			 	tabbook.setCurrent(1,true)
+		 end
 	end
+	end
+
 end
