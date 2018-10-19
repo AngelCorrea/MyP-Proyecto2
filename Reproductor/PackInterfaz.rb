@@ -21,6 +21,7 @@ class PackInterfaz
 		tabla.columnHeader.setItemSize(3,230)
 		tabla.columnHeader.setItemSize(4,-1)
 	end
+
 	def botonMinarAccion(tabla)
 		s=ControlDeBase.new
 		s.creaBase()
@@ -270,7 +271,8 @@ class PackInterfaz
 
 		artistas=FXListBox.new(registro,:opts => LISTBOX_NORMAL|LAYOUT_EXPLICIT|FRAME_THICK,:width=>270,:height=>30,:x=>20,:y=>100)
 
-
+		botonAgregaIntegrante=FXButton.new(botones, " Agregar Integrante ",:opts => BUTTON_NORMAL|LAYOUT_FILL_X)
+		botonAgregaIntegrante.backColor="DodgerBlue"
 		botonGuardar=FXButton.new(botones, "Guardar",:opts => BUTTON_NORMAL|LAYOUT_FILL_X)
 		salida=FXButton.new(botones, "Salir",:target => registro,
 			:selector => FXDialogBox::ID_CANCEL,:opts => BUTTON_NORMAL|LAYOUT_CENTER_X|LAYOUT_FILL_X)
@@ -301,6 +303,10 @@ class PackInterfaz
 				end
 			end
 
+			botonAgregaIntegrante.connect(SEL_COMMAND) do
+				PackInterfaz.new.ventanaRegistroPersona(app,nombreGrupo)
+			end
+
 			listaIntegrantes.text=listaEnElGrupo
 			artistas.appendItem(" ")
 			identificados.each{|nombre| artistas.appendItem(nombre[1])}
@@ -312,5 +318,44 @@ class PackInterfaz
 				end
 			end
 		registro.execute
+	end
+
+	def ventanaRegistroPersona(app,nombreGrupo)
+		ventanaRegistro=FXDialogBox.new(app,"Registra Integrantes",:width=>600,:height=>400)
+
+		botones=FXVerticalFrame.new(ventanaRegistro,:opts => FRAME_RAISED|LAYOUT_SIDE_BOTTOM|LAYOUT_FILL_X)
+		botonAceptar=FXButton.new(botones, "Guardar",:opts => BUTTON_NORMAL|LAYOUT_CENTER_X|LAYOUT_FILL_X)
+		salida=FXButton.new(botones, "Salir",:target => ventanaRegistro,
+			:selector => FXDialogBox::ID_CANCEL,:opts => BUTTON_NORMAL|LAYOUT_CENTER_X|LAYOUT_FILL_X)
+
+			form = FXMatrix.new(ventanaRegistro, 2,
+			 :opts => MATRIX_BY_COLUMNS|LAYOUT_FILL_X)
+			 FXLabel.new(form, "Nombre Artístico:")
+			 nombreStage=FXTextField.new(form, 20,:opts => TEXTFIELD_NORMAL|LAYOUT_FILL_X|LAYOUT_FILL_COLUMN)
+				FXLabel.new(form, "Nombre Real:")
+	 	 	nombreReal=FXTextField.new(form, 20,:opts => TEXTFIELD_NORMAL|LAYOUT_FILL_X|LAYOUT_FILL_COLUMN)
+	 	 	FXLabel.new(form, "Fecha de Nacimiento:")
+	 	 	fechaNacimiento=FXTextField.new(form, 20,:opts => TEXTFIELD_NORMAL|LAYOUT_FILL_X|LAYOUT_FILL_COLUMN)
+	 	 	FXLabel.new(form, "Fecha de muerte:")
+			fechaMuerte=FXTextField.new(form, 20,:opts => TEXTFIELD_NORMAL|LAYOUT_FILL_X|LAYOUT_FILL_COLUMN)
+			botonAceptar.connect(SEL_COMMAND) do
+				if(nombreStage.text=="")
+					FXMessageBox.error(app,MBOX_OK,"Entrada Invalida","El Nombre artistico no debe ser vacio")
+					nombreStage.backColor="OrangeRed"
+				else
+					botonAceptar.hide
+					nombreStage.backColor="Gray"
+					nombreReal.backColor="gray"
+					fechaNacimiento.backColor="gray"
+					fechaMuerte.backColor="Gray"
+					nombreStage.editable=false
+					nombreReal.editable=false
+		  		fechaNacimiento.editable=false
+					fechaMuerte.editable=false
+					ControlDeBase.new.registrarPersona(nombreStage.text,nombreReal.text,fechaNacimiento.text,fechaMuerte.text)
+					ControlDeBase.new.personaEnGrupo(nombreStage.text,nombreGrupo)
+				end
+			end
+		ventanaRegistro.execute
 	end
 end
