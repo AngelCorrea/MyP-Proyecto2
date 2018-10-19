@@ -158,7 +158,7 @@ class ControlDeBase
 
   def personaEnGrupo (personaName,grupoName)
     @@db = SQLite3::Database.new("../BaseDeDatos/base.db")
-    idPersona=@@db.execute("SELECT id_person FROM person WHERE stage_name = ? ",[personaName])
+    idPersona=@@db.execute("SELECT id_person FROM persons WHERE stage_name = ? ",[personaName])
     idGrupo=@@db.execute("SELECT id_group FROM groups WHERE name=?",[grupoName])
     @@db.execute("INSERT INTO in_group (id_person,id_group) VALUES (?,?)",[idPersona,idGrupo])
   end
@@ -233,7 +233,15 @@ class ControlDeBase
     end
     return resultados
   end
-
-
+  def buscarIdentificadosCompleto(tipoTabla)
+    @@db = SQLite3::Database.new("../BaseDeDatos/base.db")
+    resultados=@@db.execute("SELECT * FROM #{tipoTabla} ")
+    return resultados
+  end
+  def busquedaInGrup(id)
+    @@db = SQLite3::Database.new("../BaseDeDatos/base.db")
+    resultados=@@db.execute("SELECT id_person FROM in_group WHERE id_group = #{id} ")
+    return resultados
+  end
 
 end

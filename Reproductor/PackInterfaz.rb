@@ -140,7 +140,7 @@ class PackInterfaz
 		tabbook.backColor="SkyBlue"
 
 		PackInterfaz.new.tabBookPersona(tabbook,pathRenglon,configRola)
-		PackInterfaz.new.tabBookGrupo(tabbook,pathRenglon,configRola)
+		PackInterfaz.new.tabBookGrupo(tabbook,pathRenglon,configRola,app)
 
 		 configRola.execute
 	end
@@ -154,27 +154,27 @@ class PackInterfaz
 		form = FXMatrix.new(personaPage, 2,
 		 :opts => MATRIX_BY_COLUMNS|LAYOUT_FILL_X)
 
-	 pathRenglon=pathRenglon.delete "["
-	 pathRenglon=pathRenglon.delete"]"
-	 pathRenglon=pathRenglon.delete"\""
+	 	pathRenglon=pathRenglon.delete "["
+	 	pathRenglon=pathRenglon.delete"]"
+	 	pathRenglon=pathRenglon.delete"\""
 
-	 idPerformer=ControlDeBase.new.buscaPorPath(pathRenglon)
- 	 nombrePerformer=ControlDeBase.new.buscaPorId_Performer(idPerformer)
-	 ControlDeBase.new.buscarIdentificados("persons",nombrePerformer[0][0])
+	 	idPerformer=ControlDeBase.new.buscaPorPath(pathRenglon)
+ 	 	nombrePerformer=ControlDeBase.new.buscaPorId_Performer(idPerformer)
+	 	ControlDeBase.new.buscarIdentificados("persons",nombrePerformer[0][0])
 
-	 FXLabel.new(form, "Nombre Artístico:")
-	 FXLabel.new(form, nombrePerformer[0][0])
-	 FXLabel.new(form, "Nombre Real:")
-	 nombreReal=FXTextField.new(form, 20,:selector => FXDataTarget::ID_VALUE,
-		 :opts => TEXTFIELD_NORMAL|LAYOUT_FILL_X|LAYOUT_FILL_COLUMN)
-	 FXLabel.new(form, "Fecha de Nacimiento:")
-	 fechaNacimiento=FXTextField.new(form, 20, :selector => FXDataTarget::ID_VALUE,
-		 :opts => TEXTFIELD_NORMAL|LAYOUT_FILL_X|LAYOUT_FILL_COLUMN)
-	 FXLabel.new(form, "Fecha de muerte:")
-	fechaMuerte =FXTextField.new(form, 20, :selector => FXDataTarget::ID_VALUE,
-		 :opts => TEXTFIELD_NORMAL|LAYOUT_FILL_X|LAYOUT_FILL_COLUMN)
-		 botonAceptar=FXButton.new(personaPage, "Guardar",:target => configRola, :selector => FXDialogBox::ID_ACCEPT,:opts => BUTTON_NORMAL|LAYOUT_CENTER_X)
-		 reconocido=ControlDeBase.new. buscarIdentificados("persons",nombrePerformer[0][0])
+	 	FXLabel.new(form, "Nombre Artístico:")
+	 	FXLabel.new(form, nombrePerformer[0][0])
+	 	FXLabel.new(form, "Nombre Real:")
+	 	nombreReal=FXTextField.new(form, 20,:selector => FXDataTarget::ID_VALUE,
+			:opts => TEXTFIELD_NORMAL|LAYOUT_FILL_X|LAYOUT_FILL_COLUMN)
+	 	FXLabel.new(form, "Fecha de Nacimiento:")
+	 	fechaNacimiento=FXTextField.new(form, 20, :selector => FXDataTarget::ID_VALUE,
+	 	:opts => TEXTFIELD_NORMAL|LAYOUT_FILL_X|LAYOUT_FILL_COLUMN)
+	 	FXLabel.new(form, "Fecha de muerte:")
+		fechaMuerte =FXTextField.new(form, 20, :selector => FXDataTarget::ID_VALUE,
+			:opts => TEXTFIELD_NORMAL|LAYOUT_FILL_X|LAYOUT_FILL_COLUMN)
+		botonAceptar=FXButton.new(personaPage, "Guardar",:target => configRola, :selector => FXDialogBox::ID_ACCEPT,:opts => BUTTON_NORMAL|LAYOUT_CENTER_X)
+		reconocido=ControlDeBase.new. buscarIdentificados("persons",nombrePerformer[0][0])
 		 if(!reconocido[0].nil?)
 		  	nombreReal.text=reconocido[0][2]
 				fechaNacimiento.text=reconocido[0][3]
@@ -204,10 +204,9 @@ class PackInterfaz
 	end
 
 
-	def tabBookGrupo(tabbook,pathRenglon,configRola)
+	def tabBookGrupo(tabbook,pathRenglon,configRola,app)
 		grupoTab = FXTabItem.new(tabbook, " Grupo ")
-		grupoPage = FXVerticalFrame.new(tabbook,
-		:opts => FRAME_RAISED|LAYOUT_FILL)
+		grupoPage = FXVerticalFrame.new(tabbook,:opts => FRAME_RAISED|LAYOUT_FILL)
 		grupoTab.backColor="palevioletred"
 		grupoPage.backColor="palevioletred"
 
@@ -227,18 +226,25 @@ class PackInterfaz
 		fechaInicio=FXTextField.new(form, 20,:opts => TEXTFIELD_NORMAL|LAYOUT_FILL_X|LAYOUT_FILL_COLUMN)
 		FXLabel.new(form, "Fecha final:")
 		fechaFinal=FXTextField.new(form, 20,:opts => TEXTFIELD_NORMAL|LAYOUT_FILL_X|LAYOUT_FILL_COLUMN)
-		botonAceptar=FXButton.new(grupoPage," Guardar ",:opts => LAYOUT_EXPLICIT|BUTTON_NORMAL,:width=>80,:height=>30,:x=>240,:y=>150)
+		botonAceptar=FXButton.new(grupoPage," Guardar ",:opts => LAYOUT_EXPLICIT|BUTTON_NORMAL,:width=>80,:height=>30,:x=>200,:y=>150)
 
-
+		botonAgregarPersona=FXButton.new(grupoPage,"Agregar\nIntegrantes",:opts => LAYOUT_EXPLICIT|BUTTON_NORMAL,:width=>80,:height=>40,:x=>300,:y=>150)
+		botonAgregarPersona.hide
 		reconocido=ControlDeBase.new. buscarIdentificados("groups",nombrePerformer[0][0])
 		if(!reconocido[0].nil?)
 			tabbook.setCurrent(1,true)
 			fechaInicio.text=reconocido[0][2]
 			fechaFinal.text=reconocido[0][3]
+			botonAgregarPersona.show
 			tabbook.connect(SEL_COMMAND) do
 				tabbook.setCurrent(1,true)
 			end
 		end
+
+		botonAgregarPersona.connect (SEL_COMMAND) do
+			PackInterfaz.new.registrarPersonaEnGrupo(app,nombrePerformer[0][0])
+		end
+
 		botonAceptar.connect(SEL_COMMAND) do
 			if(reconocido[0].nil?)
 				ControlDeBase.new.registrarGrupo(nombrePerformer[0][0],fechaInicio.text,fechaFinal.text)
@@ -254,7 +260,57 @@ class PackInterfaz
 		 	tabbook.connect(SEL_COMMAND) do
 			 	tabbook.setCurrent(1,true)
 		 end
-	end
+	 end
 	end
 
+	def registrarPersonaEnGrupo(app,nombreGrupo)
+		registro=FXDialogBox.new(app,"Agregar Integrantes",:width=>300,:height=>400)
+		botones=FXVerticalFrame.new(registro,:opts => FRAME_RAISED|LAYOUT_SIDE_BOTTOM|LAYOUT_FILL_X)
+
+
+		artistas=FXListBox.new(registro,:opts => LISTBOX_NORMAL|LAYOUT_EXPLICIT|FRAME_THICK,:width=>270,:height=>30,:x=>20,:y=>100)
+
+
+		botonGuardar=FXButton.new(botones, "Guardar",:opts => BUTTON_NORMAL|LAYOUT_FILL_X)
+		salida=FXButton.new(botones, "Salir",:target => registro,
+			:selector => FXDialogBox::ID_CANCEL,:opts => BUTTON_NORMAL|LAYOUT_CENTER_X|LAYOUT_FILL_X)
+
+			salida.backColor="IndianRed"
+			botonGuardar.backColor="PaleGreen"
+			FXLabel.new(registro,"Grupo: "+nombreGrupo,:opts=>LAYOUT_CENTER_X,:y=>20)
+			listaIntegrantes=FXText.new(registro,:opts=>LAYOUT_EXPLICIT|TEXT_READONLY,:width=>200,:height=>150,:x=>20,:y=>140)
+
+
+			ids=ControlDeBase.new.buscarIdentificados("groups",nombreGrupo)
+			identificados=ControlDeBase.new.buscarIdentificadosCompleto("persons")
+			enGrupo=ControlDeBase.new.busquedaInGrup(ids[0][0])
+			listaEnElGrupo="Integrantes: \n"
+			if(!enGrupo.nil?)
+				i=0
+				e=0
+				aux=identificados
+				while e<enGrupo.length
+					if(aux[i][0]==enGrupo[e][0])
+						listaEnElGrupo=listaEnElGrupo+aux[i][1].to_s+"\n"
+						identificados.delete(identificados[i])
+						i=0
+						e=e+1
+					else
+						i=1+i
+					end
+				end
+			end
+
+			listaIntegrantes.text=listaEnElGrupo
+			artistas.appendItem(" ")
+			identificados.each{|nombre| artistas.appendItem(nombre[1])}
+			botonGuardar.connect(SEL_COMMAND) do
+				if(artistas.currentItem!=0)
+					personaAgregar=artistas.getItem(artistas.currentItem)
+					ControlDeBase.new.personaEnGrupo(personaAgregar,nombreGrupo)
+					botonGuardar.hide
+				end
+			end
+		registro.execute
+	end
 end

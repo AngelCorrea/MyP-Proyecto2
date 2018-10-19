@@ -6,12 +6,10 @@ require 'etc'
 
 class Minero
   def registraElementos()
-    i=0
     Find.find('/home/'+Etc.getlogin+'/Música') do |f|
       if File.file?(f)
         rola=Minero.new.empaquetaEtiquetas(f)
         ControlDeBase.new.addBaseRola(rola)
-        i=i+1
       end
     end
   end

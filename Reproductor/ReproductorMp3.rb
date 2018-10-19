@@ -7,7 +7,7 @@ include Fox
 class ReproductorMp3 < FXMainWindow
   def initialize (app)
     super(app, "Reproductor Ruby" , :width => 1200, :height => 600 |FRAME_NONE)
-    puts Minero.new.cuentaElementos
+    #puts Minero.new.cuentaElementos
     @app=app
     icono=FXPNGIcon.new(app,File.open("RecursosInterfaz/IconoApp.png","rb").read)
     self.icon=icono
@@ -38,7 +38,7 @@ class ReproductorMp3 < FXMainWindow
     lupa.backColor="dark cyan"
     botonMinar=FXButton.new(self,"Minar",:opts => LAYOUT_EXPLICIT|BUTTON_NORMAL,:width=>80,:height=>40,:x=>1090,:y=>20)
     botonMinar.icon=iconoPico
-    
+
     botonMinar.connect(SEL_COMMAND) do
       PackInterfaz.new.botonMinarAccion(tabla)
     end
