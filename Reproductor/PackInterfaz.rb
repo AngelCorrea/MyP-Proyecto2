@@ -4,6 +4,7 @@ require 'fox16'
 include Fox
 
 class PackInterfaz
+
 	def setHeaderTabla(tabla)
 		tabla.selBackColor="Pink"
 		tabla.rowHeaderWidth=-1
@@ -25,6 +26,7 @@ class PackInterfaz
 	def botonMinarAccion(tabla)
 		s=ControlDeBase.new
 		s.creaBase()
+		elementos=Minero.new.cuentaElementos()
 		Minero.new.registraElementos()
 		titulos=s.tablaGeneralTitulos
 		artistas=s.tablaGeneralArtistas
@@ -33,6 +35,7 @@ class PackInterfaz
 		path=s.tablaGeneralPath
 		i=0
 		e=0
+		count=0.0
 		while i<path.length
 			while e<tabla.numRows
 				if path[i].to_s==tabla.getItemText(e,4).to_s and path[i].to_s!="" and tabla.getItemText(e,4).to_s!= ""

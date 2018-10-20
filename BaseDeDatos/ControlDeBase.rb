@@ -3,9 +3,7 @@ require 'sqlite3'
 class ControlDeBase
   def creaBase
     if(File.exists?('../BaseDeDatos/base.db'))
-      puts " hay archivo"
     else
-      puts "no hay arvhivo"
       File.open('../BaseDeDatos/base.db','w') do |base|
         @@db = SQLite3::Database.new("../BaseDeDatos/base.db")
         rows = @@db.execute <<-SQL
