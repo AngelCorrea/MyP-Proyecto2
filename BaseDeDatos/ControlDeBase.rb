@@ -1,6 +1,7 @@
 require 'sqlite3'
 
 class ControlDeBase
+#Metodo para la creacion de la base de datos.
   def creaBase
     if(File.exists?('../BaseDeDatos/base.db'))
     else
@@ -79,6 +80,7 @@ class ControlDeBase
 
   end
 
+#Metodo para poblar la base de datos con los archivos de musica
   def addBaseRola (objetoRola)
     album=objetoRola.nombreAlbum
     noAlbum=objetoRola.noAlbum

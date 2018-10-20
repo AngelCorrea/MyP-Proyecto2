@@ -3,8 +3,10 @@ require_relative '../BaseDeDatos/ControlDeBase.rb'
 require 'fox16'
 include Fox
 
-class PackInterfaz
+#Clase de "apoyo" para la interfaz grafica
 
+class PackInterfaz
+	#Establece los encabezados de la tabla 
 	def setHeaderTabla(tabla)
 		tabla.selBackColor="Pink"
 		tabla.rowHeaderWidth=-1
@@ -23,6 +25,7 @@ class PackInterfaz
 		tabla.columnHeader.setItemSize(4,-1)
 	end
 
+	#Metodo de proceso para minar y registrar elementos en la tabla
 	def botonMinarAccion(tabla)
 		s=ControlDeBase.new
 		s.creaBase()
@@ -63,6 +66,8 @@ class PackInterfaz
 		end
 	end
 
+	#Metodo para buscar elementos en la base de datos y publicarlos en la 
+	#tabla para poder visualizar los resultados
 	def publicaEnPantalla(tabla,resultados)
 		entrada=0
 		i=0
@@ -89,7 +94,7 @@ class PackInterfaz
 
 	def busquedaInterfaz(entradaDeBusqueda,tabla)
 		if(entradaDeBusqueda.text=="")
-			#Regresa a su tamaño las tablas ocultas
+			#Regresa visible las tablas ocultas
 			i=0
 			while(i< tabla.numRows)
 				tabla.setRowHeight(i,20)
@@ -133,6 +138,8 @@ class PackInterfaz
 		end
 	end
 
+	#Metodo que crea una ventana emergente que permite el registro de interprete
+	#por medio de dos pestañas.
 	def ventanaDeModificacion(app,pathRenglon)
 		configRola=FXDialogBox.new(app,"Editar Interprete",:width=>600,:height=>300)
 		configRola.backColor="SteelBlue"
@@ -148,7 +155,8 @@ class PackInterfaz
 
 		 configRola.execute
 	end
-
+	
+	#Metodo para declarar una pestaña para registrar interpretes como personas
 	def tabBookPersona(tabbook,pathRenglon,configRola)
 		personaTab = FXTabItem.new(tabbook, " Persona ")
 		personaPage = FXVerticalFrame.new(tabbook,
@@ -207,7 +215,7 @@ class PackInterfaz
  		end
 	end
 
-
+	#Metodo para declarar una pestaña para registrar interpretes como grupos
 	def tabBookGrupo(tabbook,pathRenglon,configRola,app)
 		grupoTab = FXTabItem.new(tabbook, " Grupo ")
 		grupoPage = FXVerticalFrame.new(tabbook,:opts => FRAME_RAISED|LAYOUT_FILL)
@@ -266,7 +274,8 @@ class PackInterfaz
 		 end
 	 end
 	end
-
+	
+	#Metodo para registrar una persona como integrante de un grupo
 	def registrarPersonaEnGrupo(app,nombreGrupo)
 		registro=FXDialogBox.new(app,"Agregar Integrantes",:width=>300,:height=>400)
 		botones=FXVerticalFrame.new(registro,:opts => FRAME_RAISED|LAYOUT_SIDE_BOTTOM|LAYOUT_FILL_X)
@@ -323,6 +332,8 @@ class PackInterfaz
 		registro.execute
 	end
 
+	#Metodo para registrar personas en un grupo, cuya persona no es un interprete
+	#registrado
 	def ventanaRegistroPersona(app,nombreGrupo)
 		ventanaRegistro=FXDialogBox.new(app,"Registra Integrantes",:width=>600,:height=>400)
 

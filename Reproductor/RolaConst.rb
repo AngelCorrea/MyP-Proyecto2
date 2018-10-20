@@ -1,4 +1,7 @@
 class RolaContr
+#Clase Contructora del objeto rola
+#Si alguno de los parametros no se encuentra en el archivo (ser nil o una cadena
+#vacia) se el asignara Unknown por omision
 
   def initialize(interprete,titulo,nombreAlbum,año,genero,noAlbum,path)
     @path=path

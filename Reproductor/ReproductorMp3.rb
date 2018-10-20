@@ -4,6 +4,7 @@ require_relative '../BaseDeDatos/ControlDeBase.rb'
 
 include Fox
 
+#Interfaz de Grafica del Reproductor
 class ReproductorMp3 < FXMainWindow
   def initialize (app)
     super(app, "Reproductor Ruby" , :width => 1200, :height => 600 |FRAME_NONE)
@@ -21,9 +22,9 @@ class ReproductorMp3 < FXMainWindow
     if(File.exists?("../BaseDeDatos/base.db"))
       PackInterfaz.new.botonMinarAccion(tabla)
     end
-
+	
+      #Entrada para registrar como persona o grupo
     tabla.connect(SEL_DOUBLECLICKED) do |b|
-      ##Entrada para modificar
       tabla.selectRow(b.anchorRow)
       pathRenglon=tabla.getItemText(b.anchorRow,4)
       PackInterfaz.new.ventanaDeModificacion(self,pathRenglon)
@@ -38,14 +39,17 @@ class ReproductorMp3 < FXMainWindow
     botonMinar=FXButton.new(self,"Minar",:opts => LAYOUT_EXPLICIT|BUTTON_NORMAL,:width=>80,:height=>40,:x=>1090,:y=>20)
     botonMinar.icon=iconoPico
 
+	#Funcion de Minar de la base de datos
     botonMinar.connect(SEL_COMMAND) do
       Thread.new{PackInterfaz.new.botonMinarAccion(tabla)}
     end
-
+	
+	#Metodo de busqueda para la interfaz
     entradaDeBusqueda.connect(SEL_COMMAND) do
       PackInterfaz.new.busquedaInterfaz(entradaDeBusqueda,tabla)
     end
   end
+
   def create
     super
     show(PLACEMENT_SCREEN)
