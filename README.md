@@ -19,7 +19,7 @@ Como ejecutar el reproductor:
     -El metodo de busqueda se puede realizar con 3 parametros distintos: Interprete(I:), Album(A:) y por Titulo(T:) separados por comas si se quieren realizar busquedas simultaneas.  
     -Un ejempo de busqueda es el siguiente: I:lu,A:ga,T:lov (El resultado de la busqueda seran todas las canciones cuyo interprete tenga "lu",con album con "ga" y con titulo "lov", todo en la palabra que la contenga)  
     
-Advertencias:
+Advertencias:  
   -No se deben ingresar comandos SQL de ningun tipo, solo las entradas como se especifican.  
   -Todo archivo en el directorio "/Music" debe se exclusivamente musicales (mp3,m4a,...).  
   -No deben ingresarte comillas o apostrofes en la barra de busqueda.  
